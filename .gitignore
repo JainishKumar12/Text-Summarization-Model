@@ -1,0 +1,57 @@
+# ----------------------
+# Python
+# ----------------------
+__pycache__/
+*.py[cod]
+*.pyo
+
+# ----------------------
+# Jupyter Notebook
+# ----------------------
+.ipynb_checkpoints/
+
+# ----------------------
+# Virtual Environments
+# ----------------------
+venv/
+env/
+.venv/
+
+# ----------------------
+# Dataset (ignored)
+# ----------------------
+data/
+dataset/
+datasets/
+*.csv
+*.json
+*.zip
+
+# ----------------------
+# Model Files (large)
+# ----------------------
+*.pt
+*.pth
+*.h5
+*.ckpt
+
+# ----------------------
+# Logs & Outputs
+# ----------------------
+runs/
+logs/
+outputs/
+saved_summarization_model/
+
+# ----------------------
+# System Files
+# ----------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ----------------------
+# IDE / Editor
+# ----------------------
+.vscode/
+.idea/
