@@ -83,4 +83,4 @@ document.addEventListener("DOMContentLoaded", function() {{
 """
 
 html = html.replace("</body>", bridge_script + "</body>")
-st.components.v1.html(html, height=850, scrolling=False)
+st.components.v1.html(html, height=950, scrolling=False)
