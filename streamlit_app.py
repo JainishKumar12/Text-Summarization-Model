@@ -12,16 +12,11 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-        #MainMenu {visibility: hidden;}
-        footer {visibility: hidden;}
-        header {visibility: hidden;}
-        .stApp { background-color: #050A18; }
-        .block-container { padding: 0 !important; margin: 0 !important; }
-
-        [data-testid="stSidebar"] { display: none !important; }
-        [data-testid="collapsedControl"] { display: none !important; }
-        section[data-testid="stSidebarContent"] { display: none !important; }
-        button[kind="header"] { display: none !important; }
+        ...your existing styles...
+        
+        /* Hide page scrollbar */
+        html, body { overflow: hidden !important; }
+        [data-testid="stAppViewContainer"] { overflow: hidden !important; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -86,4 +81,4 @@ document.addEventListener("DOMContentLoaded", function() {{
 """
 
 html = html.replace("</body>", bridge_script + "</body>")
-st.components.v1.html(html, height=700, scrolling=False)
+st.components.v1.html(html, height=850, scrolling=False)
