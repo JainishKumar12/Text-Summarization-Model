@@ -19,6 +19,10 @@ st.markdown("""
         .block-container { padding: 0 !important; margin: 0 !important; }
         [data-testid="stSidebar"] { display: none !important; }
         [data-testid="collapsedControl"] { display: none !important; }
+
+        /* Hide iframe resize handle */
+        iframe { resize: none !important; }
+        [data-testid="stComponentFrame"] { overflow: hidden !important; }
     </style>
 """, unsafe_allow_html=True)
 
