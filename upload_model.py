@@ -1,7 +1,8 @@
-from transformers import T5ForConditionalGeneration, T5Tokenizer
+from huggingface_hub import HfApi
 
-model = T5ForConditionalGeneration.from_pretrained("saved_summarization_model")
-tokenizer = T5Tokenizer.from_pretrained("saved_summarization_model")
-
-model.push_to_hub("JainishKumar12/text-summarizer-t5")
-tokenizer.push_to_hub("JainishKumar12/text-summarizer-t5")
+api = HfApi()
+api.upload_folder(
+    folder_path="saved_summarization_model",
+    repo_id="JainishKumar12/text-summarizer-t5",
+    repo_type="model"
+)
