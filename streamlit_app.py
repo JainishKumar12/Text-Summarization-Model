@@ -3,7 +3,12 @@ from summarizer import clean_data, summarize_dialogue
 from transformers import T5ForConditionalGeneration, T5Tokenizer
 import torch
 
-st.set_page_config(page_title="Text Summarizer", page_icon="📝", layout="centered")
+st.set_page_config(
+    page_title="Text Summarizer",
+    page_icon="📝",
+    layout="centered",
+    initial_sidebar_state="collapsed"
+)
 
 st.markdown("""
     <style>
@@ -12,10 +17,11 @@ st.markdown("""
         header {visibility: hidden;}
         .stApp { background-color: #050A18; }
         .block-container { padding: 0 !important; margin: 0 !important; }
-        
-        /* Hide sidebar and its toggle button */
+
         [data-testid="stSidebar"] { display: none !important; }
         [data-testid="collapsedControl"] { display: none !important; }
+        section[data-testid="stSidebarContent"] { display: none !important; }
+        button[kind="header"] { display: none !important; }
     </style>
 """, unsafe_allow_html=True)
 
