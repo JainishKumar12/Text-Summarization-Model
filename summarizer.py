@@ -2,23 +2,6 @@ from transformers import T5ForConditionalGeneration, T5Tokenizer
 import torch
 import re
 
-MODEL_PATH = "JainishKumar12/text-summarizer-t5"
-
-@st.cache_resource  # will be called from streamlit_app.py
-def load_model():
-    model = T5ForConditionalGeneration.from_pretrained(MODEL_PATH)
-    tokenizer = T5Tokenizer.from_pretrained(MODEL_PATH)
-
-    if torch.backends.mps.is_available():
-        device = torch.device("mps")
-    elif torch.cuda.is_available():
-        device = torch.device("cuda")
-    else:
-        device = torch.device("cpu")
-
-    model.to(device)
-    return model, tokenizer, device
-
 
 def clean_data(text: str) -> str:
     text = re.sub(r"\r\n", " ", text)
