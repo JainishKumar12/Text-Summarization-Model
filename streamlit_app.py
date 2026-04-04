@@ -11,52 +11,89 @@ st.markdown("""
         #MainMenu {visibility: hidden;}
         footer {visibility: hidden;}
         header {visibility: hidden;}
-        body { background-color: #050A18; }
         .stApp { background-color: #050A18; }
 
-        .main-container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background: #0A1628;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(14, 165, 233, 0.15);
+        .block-container {
+            max-width: 620px !important;
+            padding-top: 60px !important;
+            padding-left: 20px !important;
+            padding-right: 20px !important;
+            margin: 0 auto !important;
+            background: #0A1628 !important;
+            border-radius: 10px !important;
+            box-shadow: 0 4px 20px rgba(14, 165, 233, 0.15) !important;
         }
-        h1 { color: #0EA5E9 !important; text-align: center; }
-        h3 { color: #7DD3FC !important; text-align: center; margin-top: -15px; }
+
+        h1 {
+            color: #0EA5E9 !important;
+            text-align: center !important;
+            font-size: 2.2rem !important;
+        }
+
+        /* Subtitle - bold, similar size to title */
+        h3 {
+            color: #0EA5E9 !important;
+            text-align: center !important;
+            font-size: 1.3rem !important;
+            font-weight: 700 !important;
+            margin-top: -10px !important;
+        }
+
+        p, .stMarkdown p {
+            color: #C9D1E0 !important;
+        }
+
+        /* Monospace textarea */
         .stTextArea textarea {
             background-color: #0D2137 !important;
             color: #C9D1E0 !important;
             border: 1px solid #1E3A5F !important;
-            font-size: 16px;
+            font-family: monospace !important;
+            font-size: 15px !important;
+            border-radius: 5px !important;
         }
         .stTextArea textarea:focus {
             border-color: #0EA5E9 !important;
             box-shadow: 0 0 8px rgba(14, 165, 233, 0.4) !important;
         }
+
+        /* Full width tall button */
+        .stButton { width: 100% !important; }
         .stButton > button {
             background-color: #0EA5E9 !important;
             color: white !important;
             border: none !important;
-            width: 100%;
-            font-size: 16px;
-            padding: 10px;
-            border-radius: 5px;
+            width: 100% !important;
+            font-size: 17px !important;
+            padding: 14px !important;
+            border-radius: 5px !important;
+            font-weight: 500 !important;
         }
         .stButton > button:hover {
             background-color: #0284C7 !important;
             box-shadow: 0 0 12px rgba(14, 165, 233, 0.5) !important;
         }
+
+        /* Summary box with centered heading */
         .summary-box {
             background: #0D2137;
-            padding: 15px;
+            padding: 15px 20px;
             border-radius: 5px;
             border: 1px solid #1E3A5F;
             color: #C9D1E0;
-            margin-top: 20px;
+            margin-top: 10px;
         }
-        .summary-box h4 { color: #0EA5E9; margin-top: 0; }
-        p { color: #C9D1E0; }
+        .summary-box h4 {
+            color: #0EA5E9 !important;
+            text-align: center !important;
+            margin-top: 0 !important;
+            font-size: 1.2rem !important;
+        }
+        .summary-box p {
+            color: #C9D1E0 !important;
+            font-size: 15px !important;
+            line-height: 1.6 !important;
+        }
     </style>
 """, unsafe_allow_html=True)
 
