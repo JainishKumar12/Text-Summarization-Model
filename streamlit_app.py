@@ -12,6 +12,10 @@ st.markdown("""
         header {visibility: hidden;}
         .stApp { background-color: #050A18; }
         .block-container { padding: 0 !important; margin: 0 !important; }
+        
+        /* Hide sidebar and its toggle button */
+        [data-testid="stSidebar"] { display: none !important; }
+        [data-testid="collapsedControl"] { display: none !important; }
     </style>
 """, unsafe_allow_html=True)
 
