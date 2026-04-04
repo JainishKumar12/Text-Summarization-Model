@@ -1,5 +1,5 @@
 import streamlit as st
-from summarizer import clean_data, summarize_dialogue
+from summarizer import summarize_dialogue
 from transformers import T5ForConditionalGeneration, T5Tokenizer
 import torch
 
@@ -11,40 +11,7 @@ st.markdown("""
         footer {visibility: hidden;}
         header {visibility: hidden;}
         .stApp { background-color: #050A18; }
-        .block-container {
-            max-width: 620px !important;
-            padding-top: 50px !important;
-        }
-        /* Hide default streamlit textarea label */
-        .stTextArea label { display: none !important; }
-        /* Full width button */
-        div.stButton { width: 100% !important; }
-        div.stButton > button {
-            width: 100% !important;
-            background-color: #0EA5E9 !important;
-            color: white !important;
-            border: none !important;
-            padding: 14px !important;
-            font-size: 17px !important;
-            border-radius: 5px !important;
-        }
-        div.stButton > button:hover {
-            background-color: #0284C7 !important;
-        }
-        /* Textarea */
-        .stTextArea textarea {
-            background-color: #0D2137 !important;
-            color: #C9D1E0 !important;
-            border: 1px solid #1E3A5F !important;
-            font-family: monospace !important;
-            font-size: 15px !important;
-        }
-        /* Override focus outline */
-        .stTextArea textarea:focus {
-            outline: none !important;
-            border-color: #0EA5E9 !important;
-            box-shadow: 0 0 8px rgba(14, 165, 233, 0.4) !important;
-        }
+        .block-container { padding: 0 !important; margin: 0 !important; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -66,48 +33,45 @@ def load_model():
 
 model, tokenizer, device = load_model()
 
-# ── Header ────────────────────────────────────────────────────────────────────
-st.markdown("<h1 style='text-align:center; color:#0EA5E9;'>Text Summarizer</h1>", unsafe_allow_html=True)
-st.markdown("<h3 style='text-align:center; color:#0EA5E9; font-weight:700; margin-top:-15px;'>Using Hugging-Face Transformer</h3>", unsafe_allow_html=True)
-st.markdown("<p style='color:#C9D1E0;'>Write or Paste your content below for quick summarization.</p>", unsafe_allow_html=True)
+# ── Read and inject HTML ──────────────────────────────────────────────────────
+with open("templates/index.html", "r", encoding="utf-8") as f:
+    html = f.read()
 
-# ── Input ─────────────────────────────────────────────────────────────────────
-dialogue = st.text_area("input", placeholder="Enter your content", height=150, label_visibility="collapsed")
+# ── Get input from query params (bridge from HTML) ────────────────────────────
+params = st.query_params
+user_input = params.get("text", "")
+summary = ""
 
-# ── Button ────────────────────────────────────────────────────────────────────
-clicked = st.button("Summarize")
+if user_input:
+    with st.spinner("Summarizing..."):
+        summary = summarize_dialogue(user_input, model, tokenizer, device)
 
-# ── Summary box always visible ────────────────────────────────────────────────
-summary_placeholder = st.empty()
+# ── Inject summary + JS bridge into HTML ─────────────────────────────────────
+bridge_script = f"""
+<script>
+// Override the fetch call to use query params instead
+document.addEventListener("DOMContentLoaded", function() {{
+    const form = document.getElementById("summarization-form");
+    const summaryText = document.getElementById("summary-text");
 
-if clicked:
-    if dialogue.strip():
-        with st.spinner("Processing..."):
-            summary = summarize_dialogue(dialogue, model, tokenizer, device)
-        summary_placeholder.markdown(f"""
-            <div style="
-                background:#0D2137;
-                padding:15px 20px;
-                border-radius:5px;
-                border:1px solid #1E3A5F;
-                margin-top:10px;
-            ">
-                <h4 style="color:#0EA5E9; text-align:center; margin-top:0;">Content Summary</h4>
-                <p style="color:#C9D1E0; font-size:15px; line-height:1.6;">{summary}</p>
-            </div>
-        """, unsafe_allow_html=True)
-    else:
-        summary_placeholder.warning("Please enter some content first.")
-else:
-    summary_placeholder.markdown("""
-        <div style="
-            background:#0D2137;
-            padding:15px 20px;
-            border-radius:5px;
-            border:1px solid #1E3A5F;
-            margin-top:10px;
-        ">
-            <h4 style="color:#0EA5E9; text-align:center; margin-top:0;">Content Summary</h4>
-            <p style="color:#6B7A99; font-size:15px;">Your summary will appear here...</p>
-        </div>
-    """, unsafe_allow_html=True)
+    // If summary already exists (returned from Python), show it
+    const existingSummary = `{summary}`;
+    if (existingSummary) {{
+        summaryText.innerText = existingSummary;
+    }}
+
+    form.addEventListener("submit", function(e) {{
+        e.preventDefault();
+        const dialogue = document.getElementById("dialogue-input").value.trim();
+        if (!dialogue) return;
+        summaryText.innerText = "Processing...";
+        // Redirect with text as query param so Streamlit can process it
+        const encoded = encodeURIComponent(dialogue);
+        window.location.href = "?text=" + encoded;
+    }});
+}});
+</script>
+"""
+
+html = html.replace("</body>", bridge_script + "</body>")
+st.components.v1.html(html, height=700, scrolling=False)
