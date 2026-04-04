@@ -39,6 +39,12 @@ st.markdown("""
             font-family: monospace !important;
             font-size: 15px !important;
         }
+        /* Override focus outline */
+        .stTextArea textarea:focus {
+            outline: none !important;
+            border-color: #0EA5E9 !important;
+            box-shadow: 0 0 8px rgba(14, 165, 233, 0.4) !important;
+        }
     </style>
 """, unsafe_allow_html=True)
 
