@@ -12,11 +12,13 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-        ...your existing styles...
-        
-        /* Hide page scrollbar */
-        html, body { overflow: hidden !important; }
-        [data-testid="stAppViewContainer"] { overflow: hidden !important; }
+        #MainMenu {visibility: hidden;}
+        footer {visibility: hidden;}
+        header {visibility: hidden;}
+        .stApp { background-color: #050A18; }
+        .block-container { padding: 0 !important; margin: 0 !important; }
+        [data-testid="stSidebar"] { display: none !important; }
+        [data-testid="collapsedControl"] { display: none !important; }
     </style>
 """, unsafe_allow_html=True)
 
