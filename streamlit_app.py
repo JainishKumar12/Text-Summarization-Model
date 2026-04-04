@@ -1,5 +1,5 @@
 import streamlit as st
-from summarizer import summarize_dialogue
+from summarizer import clean_data, summarize_dialogue
 from transformers import T5ForConditionalGeneration, T5Tokenizer
 import torch
 
@@ -15,7 +15,6 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# ── Load model ────────────────────────────────────────────────────────────────
 MODEL_PATH = "JainishKumar12/text-summarizer-t5"
 
 @st.cache_resource(show_spinner="Loading model, please wait...")
@@ -33,39 +32,42 @@ def load_model():
 
 model, tokenizer, device = load_model()
 
-# ── Read and inject HTML ──────────────────────────────────────────────────────
-with open("templates/index.html", "r", encoding="utf-8") as f:
-    html = f.read()
-
-# ── Get input from query params (bridge from HTML) ────────────────────────────
-params = st.query_params
-user_input = params.get("text", "")
+# ── Read input sent from HTML via query params ────────────────────────────────
+user_input = st.query_params.get("text", "")
 summary = ""
-
 if user_input:
     with st.spinner("Summarizing..."):
         summary = summarize_dialogue(user_input, model, tokenizer, device)
 
-# ── Inject summary + JS bridge into HTML ─────────────────────────────────────
+# ── Load HTML and inject summary + fixed JS ───────────────────────────────────
+with open("templates/index.html", "r", encoding="utf-8") as f:
+    html = f.read()
+
+# Escape backticks and backslashes for safe JS injection
+safe_input = user_input.replace("\\", "\\\\").replace("`", "\\`")
+safe_summary = summary.replace("\\", "\\\\").replace("`", "\\`")
+
 bridge_script = f"""
 <script>
-// Override the fetch call to use query params instead
 document.addEventListener("DOMContentLoaded", function() {{
     const form = document.getElementById("summarization-form");
     const summaryText = document.getElementById("summary-text");
+    const dialogueInput = document.getElementById("dialogue-input");
+    const submitButton = form.querySelector("button");
 
-    // If summary already exists (returned from Python), show it
-    const existingSummary = `{summary}`;
-    if (existingSummary) {{
-        summaryText.innerText = existingSummary;
-    }}
+    // Restore previous input and summary after reload
+    const prevInput = `{safe_input}`;
+    const prevSummary = `{safe_summary}`;
+
+    if (prevInput) dialogueInput.value = prevInput;
+    if (prevSummary) summaryText.innerText = prevSummary;
 
     form.addEventListener("submit", function(e) {{
         e.preventDefault();
-        const dialogue = document.getElementById("dialogue-input").value.trim();
+        const dialogue = dialogueInput.value.trim();
         if (!dialogue) return;
         summaryText.innerText = "Processing...";
-        // Redirect with text as query param so Streamlit can process it
+        submitButton.disabled = true;
         const encoded = encodeURIComponent(dialogue);
         window.location.href = "?text=" + encoded;
     }});
